@@ -1,0 +1,170 @@
+# =============================================================================
+# .gitignore — NCAR CM1 热带气旋 3D 模拟项目
+# 严格排除大型数据文件，只跟踪源代码、配置和脚本
+# =============================================================================
+
+# ---- CM1 模型输出（超大文件，绝不提交） ----
+cm1out_*
+*.cm1out
+cm1out_*.nc
+cm1out_*.dat
+
+# ---- NetCDF 数据文件 ----
+*.nc
+*.nc4
+*.nc3
+*.cdf
+
+# ---- GRIB 气象数据 ----
+*.grib
+*.grib2
+*.grb
+*.grb2
+*.gb2
+
+# ---- HDF 数据 ----
+*.hdf
+*.hdf5
+*.h5
+*.he5
+
+# ---- 二进制输出/中间文件 ----
+*.bin
+*.dat
+*.raw
+*.sav
+
+# ---- Fortran 编译产物 ----
+*.o
+*.mod
+*.exe
+*.out
+*.a
+*.so
+*.so.*
+*.dylib
+*.dll
+Makefile.depend
+*.d
+
+# ---- CM1 可执行文件 ----
+cm1
+cm1.exe
+cm1.gpu
+cm1_*
+
+# ---- 模型输入/重启文件（通常很大） ----
+restart_*
+*.rst
+*.RST
+
+# ---- 编译中间文件 ----
+*.c
+*.f90~
+*.F90~
+*.f~
+*.F~
+*.tmp
+
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*.pyo
+*.egg-info/
+dist/
+build/
+*.whl
+.eggs/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+*.egg
+
+# ---- Python 虚拟环境 ----
+venv/
+.venv/
+env/
+.env/
+
+# ---- Jupyter / 分析 ----
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# ---- 日志和诊断输出 ----
+*.log
+*.LOG
+*.out
+*.OUT
+slurm-*.out
+slurm*.out
+*.o[0-9]*
+*.e[0-9]*
+
+# ---- 输出目录 ----
+output/
+out/
+logs/
+run/
+runs/
+diag/
+diagnostics/
+data/
+DATA/
+figures/
+plots/
+figs/
+pics/
+tmp/
+temp/
+work/
+
+# ---- 备份文件 ----
+*~
+*.bak
+*.backup
+*.orig
+*.swp
+*.swo
+#*
+
+# ---- 压缩包 ----
+*.tar
+*.tar.gz
+*.tar.bz2
+*.tar.xz
+*.tgz
+*.zip
+*.7z
+*.rar
+
+# ---- macOS ----
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# ---- Windows ----
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ---- Linux ----
+*~
+.fuse_hidden*
+
+# ---- IDE / 编辑器 ----
+.vscode/
+.idea/
+.project
+.settings/
+*.sublime-workspace
+*.sublime-project
+
+# ---- 环境变量文件（含密钥） ----
+.env
+.env.local
+.env.*.local
+
+# ---- Git ----
+*.orig
