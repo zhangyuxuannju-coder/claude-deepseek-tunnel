@@ -335,6 +335,118 @@ git push mac main
 
 ---
 
+## 九、回家后远程访问（EasyConnect VPN）
+
+### 原理
+
+反向 SSH 隧道不依赖 Mac 的 IP 地址，回家后只要 Mac 能连上服务器，隧道自动恢复。但需要 EasyConnect VPN 维持校内路由。
+
+### 9.1 连接学校 VPN
+
+手动打开 EasyConnect，连接 `vpn.nju.edu.cn`。
+
+> **注意**：必须使用**分流模式**（非全局模式），确保只有校内流量走 VPN。
+
+### 9.2 验证隧道
+
+```bash
+cd ~/Desktop/zotero
+bash network-mode.sh status
+```
+
+### 9.3 VPN + 代理共存
+
+EasyConnect（校内分流）+ ClashX（国外代理，规则模式）可以同时运行，互不干扰：
+- EasyConnect → 校内 IP 段 → VPN
+- ClashX → 国外网站 → 代理
+- 其他 → 家里宽带直连
+
+**两个都不能开全局模式**，否则冲突。
+
+---
+
+## 十、代理配置（ClashX Pro）
+
+### 10.1 安装和配置
+
+```bash
+# 下载并安装 ClashX Pro
+# https://github.com/yichengchen/clashX/releases/latest
+
+# 配置文件位置
+~/.config/clash/config.yaml
+```
+
+### 10.2 更新订阅
+
+```bash
+cd ~/Desktop/zotero
+python3 convert_sub.py    # 从订阅链接生成 Clash 配置
+cp config.yaml ~/.config/clash/config.yaml
+# 重启 ClashX Pro 生效
+```
+
+### 10.3 局域网共享
+
+ClashX Pro 菜单 → 勾选「允许局域网连接」后，其他设备可手动设代理 `192.168.3.8:7890`。
+
+> 华为 BE3 Pro 等消费级路由器不支持修改 DHCP 网关，无法实现透明代理（零配置）。如需透明代理，需换支持 OpenWrt 的路由器。
+
+---
+
+## 十一、Mac 本地修改代码后上传
+
+如果在外置硬盘 `/Volumes/My Passport/科研/数值模式cm1/refactor` 修改了代码：
+
+```bash
+# 同步到本地工作区
+rsync -av --exclude='.git' --exclude='._*' "外置硬盘路径/" ~/Desktop/TC_dynamic_local/
+
+# 提交并推送
+cd ~/Desktop/TC_dynamic_local
+git add -A && git commit -m "描述" && git push origin main
+
+# 推送到 bare 仓库后，post-receive 钩子自动同步到 GitHub
+# 服务器上手动拉取最新：
+ssh zhangyx@114.212.48.225 "cd /data1/home/zhangyx/project/TC_dynamic && git pull mac main"
+```
+
+---
+
+## 十二、开机自启服务清单
+
+| 服务 | 位置 | 重启后 |
+|------|------|:---:|
+| SSH 反向隧道 (2222+9443) | Mac LaunchAgent | ✅ 自动 |
+| Python TLS 转发器 (fwd.py) | 服务器 bashrc | ✅ SSH 登录后自动 |
+| ClashX Pro | Mac 启动项 | ✅ 自动 |
+| EasyConnect | 手动启动 | ❌ 需手动 |
+
+---
+
+## 十三、环境变量参考
+
+服务器 `~/.bashrc` 中关键配置：
+
+```bash
+export PATH="/data1/home/zhangyx/tools/bin:$PATH"
+export ALL_PROXY=socks5://localhost:1080    # 备用（Claude Code 走 TCP 隧道，不需要这个）
+```
+
+---
+
+## 十四、初始化脚本说明
+
+| 脚本 | 用途 |
+|------|------|
+| `setup-mac.sh` | Mac 端一键配置（bare 仓库 + 隧道 + GitHub） |
+| `setup-server.sh` | 服务器端一键配置（Git + remote + .gitignore） |
+| `mac-reverse-tunnel.sh` | 反向隧道管理（start/stop/status） |
+| `network-mode.sh` | 家/校网络模式检查和切换 |
+| `convert_sub.py` | 订阅链接转 Clash 配置 |
+
+---
+
 ## 九、一键重新配置
 
 如果 Mac IP 变了或环境出问题，只需重新运行：
